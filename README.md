@@ -1,20 +1,7 @@
 # SQLHelper
 
-A simplistic SQL generator (extracted from [jdbc-helper](https://github.com/junegunn/jdbc-helper) gem)
-
-## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'sql_helper'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install sql_helper
+A simplistic SQL generator extracted from [jdbc-helper](https://github.com/junegunn/jdbc-helper) gem.
+This gem is not intended to be used independently outside the context of jdbc-helper.
 
 ## Example
 
