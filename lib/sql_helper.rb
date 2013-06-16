@@ -199,8 +199,12 @@ module SQLHelper
         next if cond.nil? || cond.empty?
         case cond
         when String
-          sqls << "(#{cond})"
+          sql = cond.strip
+          next if sql.empty?
+          sqls << "(#{sql})"
         when Array
+          sql = cond[0].to_s.strip
+          next if sql.empty?
           if prepared
             sqls << "(#{cond[0]})"
             params += cond[1..-1]

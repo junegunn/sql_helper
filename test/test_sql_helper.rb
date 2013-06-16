@@ -31,7 +31,12 @@ class TestSQLHelper < MiniTest::Unit::TestCase
         :s => { :not  => 100 },
         :t => { :not  => 'str' },
         :u => ('aa'..'zz')
-      }
+      },
+      [],
+      [nil],
+      '',
+      ['  '],
+      '  '
     ]
 
     @wherep = ["where (z <> 100) and (y = ? or y = ? or y = ?) and a = ? and b between ? and ? and c >= ? and c < ? and (d = ? or d = ?) and e = sysdate and f is not null and g > ? and h < ? and i like ? and not j like ? and k <= sysdate and l >= ? and l <= ? and not (m = ? or m >= ? and m <= ?) and n is null and not o between ? and ? and (p > ? or p < ?) and (q like ? or q like ?) and ((r like ? or r like ?) or not r like ?) and s <> ? and t <> ? and u between ? and ?",
