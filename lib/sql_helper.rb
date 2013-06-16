@@ -11,10 +11,9 @@ module SQLHelper
     # A naive check
     def check expr
       expr = expr.to_s
-      test = expr.to_s.gsub(/'[^']*'/, '').
-                       gsub(/`[^`]*`/, '').
+      test = expr.to_s.gsub(/(['`"]).*?\1/, '').
                        gsub(%r{/\*.*?\*/}, '').
-                       gsub(/"[^"]*"/, '').strip
+                       strip
       raise SyntaxError.new("cannot contain unquoted semi-colons: #{expr}") if test.include?(';')
       raise SyntaxError.new("cannot contain unquoted comments: #{expr}") if test.match(%r{--|/\*|\*/})
       raise SyntaxError.new("unclosed quotation mark: #{expr}") if test.match(/['"`]/)
@@ -206,11 +205,8 @@ module SQLHelper
             sqls << "(#{cond[0]})"
             params += cond[1..-1]
           else
-            sql = "(#{cond[0]})"
-            # FIXME
-            cond[1..-1].each do |c|
-              sql = sql.sub('?', quote(c))
-            end
+            params = cond[1..-1]
+            sql = "(#{cond[0]})".gsub('?') { quote params.shift }
             sqls << sql
           end
         when Hash

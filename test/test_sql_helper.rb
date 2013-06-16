@@ -8,9 +8,9 @@ class TestSQLHelper < MiniTest::Unit::TestCase
   def setup
     @conds = [
       'z <> 100',
-      ['y = ? or y = ? or y = ?', 200, "Macy's", BigDecimal('3.141592')],
+      ['y = ? or y = ? or y = ?', 200, "Macy's???", BigDecimal('3.141592')],
       {
-        :a => "hello 'world'",
+        :a => "hello 'world'???",
         :b => (1..10),
         :c => (1...10),
         :d => ['abc', "'def'"],
@@ -35,8 +35,8 @@ class TestSQLHelper < MiniTest::Unit::TestCase
     ]
 
     @wherep = ["where (z <> 100) and (y = ? or y = ? or y = ?) and a = ? and b between ? and ? and c >= ? and c < ? and (d = ? or d = ?) and e = sysdate and f is not null and g > ? and h < ? and i like ? and not j like ? and k <= sysdate and l >= ? and l <= ? and not (m = ? or m >= ? and m <= ?) and n is null and not o between ? and ? and (p > ? or p < ?) and (q like ? or q like ?) and ((r like ? or r like ?) or not r like ?) and s <> ? and t <> ? and u between ? and ?",
-      200, "Macy's", BigDecimal("3.141592"),
-      "hello 'world'",
+      200, "Macy's???", BigDecimal("3.141592"),
+      "hello 'world'???",
       1, 10,
       1, 10,
       'abc', "'def'",
@@ -55,10 +55,8 @@ class TestSQLHelper < MiniTest::Unit::TestCase
       'aa', 'zz'
     ]
 
-    @where = @wherep[0]
-    @wherep[1..-1].each do |param|
-      @where = @where.sub('?', SQLHelper.quote(param))
-    end
+    params = @wherep[1..-1]
+    @where = @wherep[0].gsub('?') { SQLHelper.quote params.shift }
   end
 
   def test_where
@@ -155,10 +153,10 @@ class TestSQLHelper < MiniTest::Unit::TestCase
       %[hel/*lo],
       %[hel*/lo],
     ].each do |sql|
-      assert_raises(SyntaxError) { SQLHelper.check sql }
+      assert_raises(SyntaxError) { SQLHelper.check sql   }
       assert_raises(SyntaxError) { SQLHelper.project sql }
-      assert_raises(SyntaxError) { SQLHelper.limit sql }
-      assert_raises(SyntaxError) { SQLHelper.order sql }
+      assert_raises(SyntaxError) { SQLHelper.limit sql   }
+      assert_raises(SyntaxError) { SQLHelper.order sql   }
     end
   end
 end
