@@ -197,6 +197,7 @@ module SQLHelper
         end
 
       conds.each do |cond|
+        next if cond.nil? || cond.empty?
         case cond
         when String
           sqls << "(#{cond})"

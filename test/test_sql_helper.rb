@@ -63,6 +63,7 @@ class TestSQLHelper < MiniTest::Unit::TestCase
 
   def test_where
     assert_equal @where, SQLHelper.where(*@conds)
+    assert_equal @where, SQLHelper.where(*(@conds + [nil, [], nil]))
   end
 
   def test_where_prepared
