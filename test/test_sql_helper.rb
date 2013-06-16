@@ -8,7 +8,7 @@ class TestSQLHelper < MiniTest::Unit::TestCase
   def setup
     @conds = [
       'z <> 100',
-      ['y = ? or y = ? or y = ?', 200, "Macy's???", BigDecimal('3.141592')],
+      ["y = ? or y = ? or y = ? or z = '???'", 200, "Macy's???", BigDecimal('3.141592')],
       {
         :a => "hello 'world'???",
         :b => (1..10),
@@ -39,7 +39,7 @@ class TestSQLHelper < MiniTest::Unit::TestCase
       '  '
     ]
 
-    @wherep = ["where (z <> 100) and (y = ? or y = ? or y = ?) and a = ? and b between ? and ? and c >= ? and c < ? and (d = ? or d = ?) and e = sysdate and f is not null and g > ? and h < ? and i like ? and not j like ? and k <= sysdate and l >= ? and l <= ? and not (m = ? or m >= ? and m <= ?) and n is null and not o between ? and ? and (p > ? or p < ?) and (q like ? or q like ?) and ((r like ? or r like ?) or not r like ?) and s <> ? and t <> ? and u between ? and ?",
+    @wherep = ["where (z <> 100) and (y = ? or y = ? or y = ? or z = 'xxx') and a = ? and b between ? and ? and c >= ? and c < ? and (d = ? or d = ?) and e = sysdate and f is not null and g > ? and h < ? and i like ? and not j like ? and k <= sysdate and l >= ? and l <= ? and not (m = ? or m >= ? and m <= ?) and n is null and not o between ? and ? and (p > ? or p < ?) and (q like ? or q like ?) and ((r like ? or r like ?) or not r like ?) and s <> ? and t <> ? and u between ? and ?",
       200, "Macy's???", BigDecimal("3.141592"),
       "hello 'world'???",
       1, 10,
@@ -61,7 +61,14 @@ class TestSQLHelper < MiniTest::Unit::TestCase
     ]
 
     params = @wherep[1..-1]
-    @where = @wherep[0].gsub('?') { SQLHelper.quote params.shift }
+    @where = @wherep[0].gsub('?') {
+      if params.empty?
+        '?'
+      else
+        SQLHelper.quote params.shift
+      end
+    }.sub('xxx', '???')
+    @wherep[0].sub!('xxx', '???')
   end
 
   def test_where

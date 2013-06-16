@@ -210,7 +210,13 @@ module SQLHelper
             params += cond[1..-1]
           else
             params = cond[1..-1]
-            sql = "(#{cond[0]})".gsub('?') { quote params.shift }
+            sql = "(#{cond[0]})".gsub('?') {
+              if params.empty?
+                '?'
+              else
+                quote params.shift
+              end
+            }
             sqls << sql
           end
         when Hash
