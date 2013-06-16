@@ -192,11 +192,10 @@ module SQLHelper
         when Array
           conds
         else
-          raise ArgumentError, "invalid argument type: #{conds.class}"
+          raise ArgumentError, "invalid argument: #{conds.class}"
         end
 
       conds.each do |cond|
-        next if cond.nil? || cond.empty?
         case cond
         when String
           sql = cond.strip
@@ -225,6 +224,9 @@ module SQLHelper
             sqls << ret[0]
             params += ret[1..-1] || []
           end
+        when nil
+        else
+          raise ArgumentError, "invalid condition: #{cond}"
         end
       end
 

@@ -80,6 +80,11 @@ class TestSQLHelper < MiniTest::Unit::TestCase
     assert_equal @wherep, SQLHelper.where_prepared(*@conds)
   end
 
+  def test_where_invalid
+    assert_raises(ArgumentError) { SQLHelper.where(5) }
+    assert_raises(ArgumentError) { SQLHelper.where(:true) }
+  end
+
   def test_select
     sql, *params = SQLHelper.select(
       :prepared => true,
