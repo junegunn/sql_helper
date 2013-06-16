@@ -208,7 +208,7 @@ module SQLHelper
             sql = "(#{cond[0]})"
             # FIXME
             cond[1..-1].each do |c|
-              sql = sql.sub('?', c.to_s)
+              sql = sql.sub('?', quote(c))
             end
             sqls << sql
           end
