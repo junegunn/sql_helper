@@ -120,7 +120,7 @@ module SQLHelper
       if args.empty?
         '*'
       else
-        args.join ', '
+        check args.join ', '
       end
     end
 
@@ -129,7 +129,7 @@ module SQLHelper
       if args.empty?
         ''
       else
-        "order by #{args.join ', '}"
+        check "order by #{args.join ', '}"
       end
     end
 
@@ -140,9 +140,9 @@ module SQLHelper
       }
       arg = arg.to_s.strip
       if offset
-        "limit #{offset}, #{limit}"
+        check "limit #{offset}, #{limit}"
       elsif limit
-        "limit #{limit}"
+        check "limit #{limit}"
       else
         ''
       end

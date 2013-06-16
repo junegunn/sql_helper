@@ -156,6 +156,9 @@ class TestSQLHelper < MiniTest::Unit::TestCase
       %[hel*/lo],
     ].each do |sql|
       assert_raises(SyntaxError) { SQLHelper.check sql }
+      assert_raises(SyntaxError) { SQLHelper.project sql }
+      assert_raises(SyntaxError) { SQLHelper.limit sql }
+      assert_raises(SyntaxError) { SQLHelper.order sql }
     end
   end
 end
