@@ -200,16 +200,17 @@ module SQLHelper
         when String
           sql = cond.strip
           next if sql.empty?
-          sqls << "(#{sql})"
+          sqls << "(#{check sql})"
         when Array
           sql = cond[0].to_s.strip
           next if sql.empty?
+          sql = check sql
           if prepared
-            sqls << "(#{cond[0]})"
+            sqls << "(#{sql})"
             params += cond[1..-1]
           else
             params = cond[1..-1]
-            sql = "(#{cond[0]})".gsub('?') {
+            sql = "(#{sql})".gsub('?') {
               if params.empty?
                 '?'
               else
