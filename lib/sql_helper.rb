@@ -221,7 +221,7 @@ module SQLHelper
           end
         when Hash
           cond.each do |col, cnd|
-            ret = eval_hash_cond col, cnd, prepared
+            ret = eval_cond col, cnd, prepared
             sqls << ret[0]
             params += ret[1..-1] || []
           end
@@ -238,7 +238,7 @@ module SQLHelper
       end
     end
 
-    def eval_hash_cond col, cnd, prepared
+    def eval_cond col, cnd, prepared
       case cnd
       when Numeric, String
         prepared ? ["#{col} = ?", cnd] : [[col, quote(cnd)].join(' = ')]
@@ -256,7 +256,7 @@ module SQLHelper
         sqls   = []
         params = []
         cnd.each do |v|
-          ret = eval_hash_cond col, v, prepared
+          ret = eval_cond col, v, prepared
           sqls << ret[0]
           params += ret[1..-1]
         end
@@ -277,15 +277,20 @@ module SQLHelper
                 ["#{col} <> ?", val] :
                 ["#{col} <> #{quote val}"]
             else
-              ary = eval_hash_cond col, val, prepared
-              ary[0].prepend 'not '
+              ary = eval_cond col, val, prepared
+              ary[0] =
+                if ary[0] =~ /^\(.*\)$/
+                  "not #{ary[0]}"
+                else
+                  "not (#{ary[0]})"
+                end
               ary
             end
           when :or
             sqls   = []
             params = []
             val.each do |v|
-              ret = eval_hash_cond col, v, prepared
+              ret = eval_cond col, v, prepared
               sqls << ret[0]
               params += ret[1..-1]
             end

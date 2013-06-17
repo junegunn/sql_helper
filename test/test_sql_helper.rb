@@ -30,7 +30,9 @@ class TestSQLHelper < MiniTest::Unit::TestCase
         :r => { :or   => [{ :like => ['ABC%', 'DEF%'] }, { :not => { :like => 'XYZ%' } }] },
         :s => { :not  => 100 },
         :t => { :not  => 'str' },
-        :u => ('aa'..'zz')
+        :u => ('aa'..'zz'),
+        :v => { :not => { :gt => 100, :lt => 200 } },
+        :w => { :not => { :sql => 'sysdate' } }
       },
       [],
       [nil],
@@ -39,7 +41,7 @@ class TestSQLHelper < MiniTest::Unit::TestCase
       '  '
     ]
 
-    @wherep = ["where (z <> 100) and (y = ? or y = ? or y = ? or z = 'xxx') and a = ? and b between ? and ? and c >= ? and c < ? and (d = ? or d = ?) and e = sysdate and f is not null and g > ? and h < ? and i like ? and not j like ? and k <= sysdate and l >= ? and l <= ? and not (m = ? or m >= ? and m <= ?) and n is null and not o between ? and ? and (p > ? or p < ?) and (q like ? or q like ?) and ((r like ? or r like ?) or not r like ?) and s <> ? and t <> ? and u between ? and ?",
+    @wherep = ["where (z <> 100) and (y = ? or y = ? or y = ? or z = 'xxx') and a = ? and b between ? and ? and c >= ? and c < ? and (d = ? or d = ?) and e = sysdate and f is not null and g > ? and h < ? and i like ? and not (j like ?) and k <= sysdate and l >= ? and l <= ? and not (m = ? or m >= ? and m <= ?) and n is null and not (o between ? and ?) and (p > ? or p < ?) and (q like ? or q like ?) and ((r like ? or r like ?) or not (r like ?)) and s <> ? and t <> ? and u between ? and ? and not (v > ? and v < ?) and not (w = sysdate)",
       200, "Macy's???", BigDecimal("3.141592"),
       "hello 'world'???",
       1, 10,
@@ -57,7 +59,8 @@ class TestSQLHelper < MiniTest::Unit::TestCase
       'ABC%', 'DEF%', 'XYZ%',
       100,
       'str',
-      'aa', 'zz'
+      'aa', 'zz',
+      100, 200
     ]
 
     params = @wherep[1..-1]
